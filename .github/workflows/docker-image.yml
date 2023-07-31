@@ -1,49 +1,59 @@
-name: Build and push Docker images
+name: 构建并推送Docker镜像
 
 on:
+  # 定时任务，每天北京时间早上7点触发
   schedule:
   - cron: '0 7 * * *'
+  # 当代码推送到master分支时触发
   push:
     branches:
       - master
 
 env:
+  # 设置时区为亚洲/上海（北京时间）
   TZ: Asia/Shanghai 
 
 jobs:
   docker:
+    # 使用最新版的Ubuntu操作系统
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        # 拉取代码仓库到工作目录
+        uses: sangxuesheng/lsky-pro-Docker
 
       - name: Download and Unzip Upstream Source Code
+        # 下载和解压上游源代码（可能是依赖的项目或资源）
         run: |
           curl -OL https://github.com/sangxuesheng/lsky-pro-Docker/archive/refs/tags/1.0.zip
           unzip *.zip
           mv ./lsky-pro-master/* ./
           mv ./lsky-pro-master/.env.example ./
           rm -rf master.zip lsky-pro-master
+
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
+          # 设置PHP版本为8.1
           php-version: '8.1'
         
       - name: Copy .env
+        # 如果项目根目录下没有.env文件，则复制.env.example为.env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       
       - name: Install Dependencies
+        # 使用Composer安装项目依赖
         run: composer install
 
       - name: Login to DockerHub
+        # 登录到DockerHub以准备推送镜像
         uses: docker/login-action@v1 
         with:
+          # 使用GitHub仓库的Secrets中存储的DockerHub用户名和密码进行认证
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - name: Build and push
+        # 构建Docker镜像，并推送到DockerHub的tingwensuojian用户下的lsky-pro-docker仓库的latest标签
         run: |
-          docker build -t halcyonazure/lsky-pro-docker:latest .
-          docker push halcyonazure/lsky-pro-docker:latest
-
-
-
+          docker build -t tingwensuojian/lsky-pro-docker:latest .
+          docker push tingwensuojian/lsky-pro-docker:latest
