@@ -1,0 +1,37 @@
+version: '3'
+services:
+  lskypro:
+    image: halcyonazure/lsky-pro-docker:latest
+    restart: unless-stopped
+    hostname: lskypro
+    container_name: lskypro
+    environment:
+      - WEB_PORT=8089
+    volumes:
+      - $PWD/web:/var/www/html/
+    ports:
+      - "9080:8089"
+    networks:
+      - lsky-net
+
+  mysql-lsky:
+    image: mysql:5.7.22
+    restart: unless-stopped
+    # 主机名，可作为"数据库连接地址"
+    hostname: mysql-lsky
+    # 容器名称
+    container_name: mysql-lsky
+    # 修改加密规则
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - $PWD/mysql/data:/var/lib/mysql
+      - $PWD/mysql/conf:/etc/mysql
+      - $PWD/mysql/log:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: lAsWjb6rzSzENUYg # 数据库root用户密码，自行修改
+      MYSQL_DATABASE: lsky-data # 可作为"数据库名称/路径"
+    networks:
+      - lsky-net
+
+networks:
+  lsky-net: {}
