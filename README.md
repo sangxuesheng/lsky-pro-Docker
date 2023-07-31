@@ -6,7 +6,7 @@
 - 修改页面相关UI、公告页面半透明、修改二级菜单背景蓝色
 - 后台增加`获取token功能`（用于picgo等图床工具链接使用）
 - 默认`反向代理https://`（http访问加载不了静态资源/）`本地环境安装需要先反向代理才能访问安装`
-- 取消[反向代理https://](https://github.com/HalcyonAzure/lsky-pro-docker#%E5%8F%8D%E4%BB%A3https)方法
+- 取消[反向代理https://](https://github.com/sangxuesheng/lsky-pro-Docker#%E5%8F%8D%E4%BB%A3https)方法
 - 
 
 ### 效果
