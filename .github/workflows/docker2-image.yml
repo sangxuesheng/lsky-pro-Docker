@@ -1,58 +1,67 @@
-# This is a basic workflow to help you get started with Actions
-name: build docker image
-# Controls when the action will run.
+name: 构建Docker镜像
+
+# 定义触发工作流程的事件为代码推送到main分支时，以及手动触发workflow_dispatch
 on:
   push:
     branches:
       - main
-# Allows you to run this workflow manually from the Actions tab
-  # 可以手动触发
   workflow_dispatch:
     inputs:
       logLevel:
-        description: 'Log level'
+        description: '日志级别'
         required: true
         default: 'warning'
       tags:
-        description: 'Test scenario tags'
+        description: '测试场景标签'
 
 jobs:
   buildx:
+    # 使用最新版的Ubuntu操作系统
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
+        # 拉取代码仓库到工作目录
         uses: actions/checkout@v2
 
       - name: Get current date
+        # 获取当前日期和时间并将其输出为'today'参数
         id: date
         run: echo "::set-output name=today::$(date +'%Y-%m-%d_%H-%M')"
 
       - name: Set up QEMU
+        # 设置QEMU，用于支持多平台构建
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
+        # 设置Docker Buildx，用于支持多平台构建
         id: buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Available platforms
+        # 输出所有可用的平台，用于后续构建和推送镜像
         run: echo ${{ steps.buildx.outputs.platforms }}
 
       - name: Login to DockerHub
+        # 登录到DockerHub以准备推送镜像
         uses: docker/login-action@v1
         with:
+          # 使用GitHub仓库的Secrets中存储的DockerHub用户名和密码进行认证
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and push
+        # 使用Docker Buildx构建和推送镜像
         uses: docker/build-push-action@v2
         with:
+          # 构建上下文为当前目录
           context: .
+          # 指定Dockerfile的路径
           file: ./Dockerfile
-          # 所需要的体系结构，可以在 Available platforms 步骤中获取所有的可用架构
-          platforms: linux/amd64,linux/arm64/v8
-          # 镜像推送时间
+          # 所需的体系结构，这里包括x86_64（amd64）和ARM64
+          platforms: linux/amd64
+          # 如果不是从pull_request事件触发，则推送镜像
           push: ${{ github.event_name != 'pull_request' }}
-          # 给清单打上多个标签
+          # 给构建的镜像打上多个标签，包括日期时间和'latest'
           tags: |
             tingwensuojian/lsky-pro-docker:${{ steps.date.outputs.today }}
             tingwensuojian/lsky-pro-docker:latest

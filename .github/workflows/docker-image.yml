@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout
         # 拉取代码仓库到工作目录
-        uses: sangxuesheng/lsky-pro-Docker
+        uses: actions/checkout@v2
 
       - name: Download and Unzip Upstream Source Code
         # 下载和解压上游源代码（可能是依赖的项目或资源）
