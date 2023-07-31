@@ -1,16 +1,29 @@
-## 听闻Docker完整美化版
+## lsky pro图床优化&美化
 
-- 增加首页上传背景美化/视频背景
-
+- 增加首页上传背景美化/PC端：视频   手机端：图片
 - 修改上传页面半透明、页面头部半透明、页面底部全透明
-
 - 修改登录页面、注册页面、找回页面等输入框半透明
-
 - 修改页面相关UI、公告页面半透明、修改二级菜单背景蓝色
+- 后台增加`获取token功能`（用于picgo等图床工具链接使用）
+- 默认`反向代理https://`（http访问加载不了静态资源/）`本地环境安装需要先反向代理才能访问安装`
+- 取消[反向代理https://](https://github.com/HalcyonAzure/lsky-pro-docker#%E5%8F%8D%E4%BB%A3https)方法
+- 
 
-- 后台增加获取token功能（用于picgo等图床工具链接使用）
+### 效果
 
-### 使用方式
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c551989b92c.png)
+
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c57cf308c4a.png)
+
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c5557898c1c.png)
+
+
+
+
+
+## 使用方式
+
+### `Docker搭建`
 
   ```docker
 docker run -d \
@@ -26,13 +39,77 @@ docker run -d \
 
 - 重新启动Docker容器，执行安装即可
 
-[lsky-pro-Docker完整美化版下载](https://www.xn--9qr844m.cn:5244/d/%E6%9C%AC%E5%9C%B0/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E8%B5%84%E6%96%99%E5%A4%87%E4%BB%BD%E5%85%B1%E4%BA%AB/%E7%BD%91%E7%AB%99%E4%B8%8A%E4%BC%A0%E9%99%84%E4%BB%B6/lsky-pro%E5%AE%8C%E6%95%B4%E7%BE%8E%E5%8C%96%E7%89%88.zip) &middot;
 
-![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c551989b92c.png)
 
-![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c57cf308c4a.png)
+### 宝塔面板安装
 
-![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c5557898c1c.png)
+- `PHP >= 8.0.2`
+- `Mysql>=5.7`
+  （**数据库版本5.7！**是5.7！5.6装不了，记得升级一下数据库版本，**`升级前记得备份数据库！`**  **`升级前记得备份数据库！`**）
+
+**1、**(你的有一个域名，解析域名和宝塔安装就不多赘述)废话不多说，**首先创建一个站点和数据库**
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c56289a876d.png)
+创建好站点和数据库后，**数据库名和用户密码记下来**备用
+
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c562a658c07.png)
+
+在宝塔面板左侧点文件，你的域名地址文件点进去，把你下载好的**lsky-pro美化包导入根目录**，双击解压(然后删除压缩包)
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c562c99c98a.png)
+
+ 
+
+**2、**设置运行**目录为public**为了防止出错，可以**关闭防跨站攻击**，按着步骤来
+
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c562d43a796.png)
+
+ 
+
+**设置伪静态复制以下代码粘贴到宝塔面板伪静态里**
+
+```
+location / {
+    if (!-e $request_filename) {
+        rewrite ^(.*)$ /index.php?s=$1 last; break;
+    }
+}
+```
+
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c562e53f982.png)
+
+ 
+
+**4、**安装**fileinfo，imagemagick和exif扩展**PHP设置→安装扩展
+
+ps:  **`fileinfo`**扩展安装不上一可以通过宝塔面板的软件商店：Linux工具箱——Swap/虚拟内存设置2048或4096的虚拟内存解决
+
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c562ff543b4.png)
+
+ 
+
+
+
+禁用函数默认情况下8.0对这几个函数都是禁用了的。如果是通过宝塔面板进行设置，可以通过面板操作进行删除， 删除后注意重启PHP服务 ：
+
+**找到以下几个函数，删除即可↓↓↓**
+
+- **`exec`**
+- **`shell_exec`**
+- **`readlink`**
+- **`symlink`**
+- **`putenv`**
+- **`getenv`**
+
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c5630ee670a.png)
+ **5、**安装图床访问你的网站域名，未安装自动跳转至安装页面，根据页面提示安装即可↓↓↓
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c5631af1624.png)
+
+ 
+
+**最后填入你的数据库名、用户名、密码**
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c5633a2c906.png)
+点这里就进入Lsky Pro主界面，然后就开心的上传你的图片了
+![](https://tuchuang2.sangxuesheng.com/2023/07/30/64c56347df584.png)
+
 
 ----
 
