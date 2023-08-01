@@ -32,12 +32,9 @@ docker run -d \
     -p 8089:8089 \
     -v 此处修改成本地文件夹位置（绝对路径）:/var/www/html \
     -e （修改成自己需要的端口）=8089 \
-    halcyonazure/lsky-pro-docker:latest
+    tingwensuojian/lsky-pro-docker:latest
   ```
 
-- Docker安装后，停止Docker容器，删除本地镜像文件替上传美化包文件，
-
-- 重新启动Docker容器，执行安装即可
 
 
 
@@ -226,7 +223,7 @@ docker run -d \
     -p 8089:8089 \
     -v 此处修改成本地文件夹位置（绝对路径）:/var/www/html \
     -e （修改成自己需要的端口）=8089 \
-    halcyonazure/lsky-pro-docker:latest
+    tingwensuojian/lsky-pro-docker:latest
 ```
 
 ## 环境变量
@@ -255,7 +252,7 @@ docker exec -it lskypro sed -i '32 a \\\Illuminate\\Support\\Facades\\URL::force
 version: '3'
 services:
   lskypro:
-    image: halcyonazure/lsky-pro-docker:latest
+    image: tingwensuojian/lsky-pro-docker:latest
     restart: unless-stopped
     hostname: lskypro
     container_name: lskypro
